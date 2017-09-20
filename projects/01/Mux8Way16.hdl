@@ -19,4 +19,45 @@ CHIP Mux8Way16 {
 
     PARTS:
     // Put your code here:
+	Not(in = sel[2], out = notsel2);
+	Not(in = sel[1], out = notsel1);
+	Not(in = sel[0], out = notsel0);
+	Or(a = sel[0], b = notsel0, out = one);
+
+	And4way(a = notsel2, b = notsel1, c = notsel0, d = one, out = sela1);
+	And4way(a = notsel2, b = notsel1, c = sel[0], d = one, out = selb1);
+	And4way(a = notsel2, b = sel[1], c = notsel0, d = one, out = selc1);
+	And4way(a = notsel2, b = sel[1], c = sel[0] , d = one, out = seld1);
+	And4way(a = sel[2], b = notsel1, c = notsel0, d = one, out = sele1);
+	And4way(a = sel[2], b = notsel1, c = sel[0], d = one, out = self1);
+	And4way(a = sel[2], b = sel[1], c = notsel0, d = one, out = selg1);
+	And4way(a = sel[2], b = sel[1], c = sel[0], d = one, out = selh1);
+
+	Changeto16bit(in = sela1, out = sela);
+	Changeto16bit(in = selb1, out = selb);
+	Changeto16bit(in = selc1, out = selc);
+	Changeto16bit(in = seld1, out = seld);
+	Changeto16bit(in = sele1, out = sele);
+	Changeto16bit(in = self1, out = self);
+	Changeto16bit(in = selg1, out = selg);
+	Changeto16bit(in = selh1, out = selh);
+
+	And16(a = a, b = sela, out = ta);
+	And16(a = b, b = selb, out = tb);
+	And16(a = c, b = selc, out = tc);
+	And16(a = d, b = seld, out = td);
+	And16(a = e, b = sele, out = te);
+	And16(a = f, b = self, out = tf);
+	And16(a = g, b = selg, out = tg);
+	And16(a = h, b = selh, out = th);
+
+	Or16(a = ta, b = tb, out = out00);
+	Or16(a = tc, b = td, out = out01);
+	Or16(a = te, b = tf, out = out02);
+	Or16(a = tg, b = th, out = out03);
+
+	Or16(a = out00, b = out01, out = out10);
+	Or16(a = out02, b = out03, out = out11);
+
+	Or16(a = out10, b = out11, out = out);
 }
