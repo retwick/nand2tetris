@@ -1,0 +1,7 @@
+CHIP Propagator {
+	IN a, b;
+	OUT out;
+
+	PARTS:
+	Xor(a = a, b = b, out= out);
+}
