@@ -40,4 +40,30 @@ CHIP CPU {
 
     PARTS:
     // Put your code here:
+    Mux16(a=instruction, b=tempfeedback, sel = s1, out = mux1out);
+    Register(in = mux1out, load = la, out = regaout);
+    Mux16(a=regaout, b=inM, sel = s2, out = mux2out);
+
+    //PC(reset,regaout, out = pcout);           change as per defn. of PC
+    Register(in=tempfeedback, load = ld, out = regdout);
+
+    And(a = instruction[15], b=instruction[3], out = writeM);
+
+    //Hack ALU takes inputs regdout(x) and mux2out(y)
+
+    //defining assumed variables s1,la,s2,ld
+    // s1 = i15
+    And(a=instruction[15],b=instruction[15], out = s1);
+
+    // la = ~i15 + i15.i5
+    And(a = instruction[15], b = instruction[5], out = i15andi5);
+    Not(in=i15, out=noti15);
+    Or(a = noti15, b=i15andi5, out = la);
+    
+    //s2 = i12.i15
+    And(a=instruction[12], b=instruction[15], out = s2);
+    
+    //ld = i15.i4
+    And(a=instruction[15], b=instruction[4], out= ld);
+
 }

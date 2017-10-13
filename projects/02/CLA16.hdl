@@ -10,14 +10,14 @@ CHIP CLA16 {
 	Or(a = a[0], b = nota, out = one);
 
 	//Propagator terms
-	Propagator(a = a[0], b = b[0], out = p1);
-	Propagator(a = a[1], b = b[1], out = p2);
-	Propagator(a = a[2], b = b[2], out = p3);
-	Propagator(a = a[3], b = b[3], out = p4);
-	Propagator(a = a[4], b = b[4], out = p5);
-	Propagator(a = a[5], b = b[5], out = p6);
-	Propagator(a = a[6], b = b[6], out = p7);
-	Propagator(a = a[7], b = b[7], out = p8);
+	Propagator(a = a[0], b = b[0], out = p0);
+	Propagator(a = a[1], b = b[1], out = p1);
+	Propagator(a = a[2], b = b[2], out = p2);
+	Propagator(a = a[3], b = b[3], out = p3);
+	Propagator(a = a[4], b = b[4], out = p4);
+	Propagator(a = a[5], b = b[5], out = p5);
+	Propagator(a = a[6], b = b[6], out = p6);
+	Propagator(a = a[7], b = b[7], out = p7);
 	Propagator(a = a[8], b = b[8], out = p8);
 	Propagator(a = a[9], b = b[9], out = p9);
 	Propagator(a = a[10], b = b[10], out = p10);
@@ -28,11 +28,68 @@ CHIP CLA16 {
 	Propagator(a = a[15], b = b[15], out = p15);
 
 	//generator terms
+	And(a = a[0], b = b[0], out = g0);
+	And(a = a[1], b = b[1], out = g1);
+	And(a = a[2], b = b[2], out = g2);
+	And(a = a[3], b = b[3], out = g3);
+	And(a = a[4], b = b[4], out = g4);
+	And(a = a[5], b = b[5], out = g5);
+	And(a = a[6], b = b[6], out = g6);
+	And(a = a[7], b = b[7], out = g7);
+	And(a = a[8], b = b[8], out = g8);
+	And(a = a[9], b = b[9], out = g9);
+	And(a = a[10], b = b[10], out = g10);
+	And(a = a[11], b = b[11], out = g11);
+	And(a = a[12], b = b[12], out = g12);
+	And(a = a[13], b = b[13], out = g13);
+	And(a = a[14], b = b[14], out = g14);
+	And(a = a[15], b = b[15], out = g15);
 
-
+	
 	//carry terms
-	//c0
+	//  c i+1 = G i + P i G i−1 + P i P i−1 G i−2 + · · · + P i P i−1 · · · P 1 G 0 + P i P i−1 · · · P 0 c 0
+	//c0 = g0
 	And(a = g0, b = one, out = c0 );
+	
+	//c1 = c0p0+g0
+	Or(a = g0, b = c0p0, out = c1);
+	And(a = c0, b = p0, out = c0p0 );
+
+	//c2 = c1p1+g1 = p1p0c0+ p1g0 + g1
+	And(a = p1, b = g0, out = p1g0);
+	And(a = c0, b = p0, out = p0c0);
+	And(a = p0c0, b = p1, out = p1p0c0);
+	Or(a = p1p0c0, b = p1g0, out = c2_t1);
+	Or(a = c2_t1, b = g1, out = c2);
+
+	//c3 = c2p2+g2 = p2p1p0c0 + p2p1g0 + p2g1+ g2
+	And4way( a = p2, b = p1, c = p0, d = c0, out = p2p1p0c0);
+	And4way( a = p2, b = p1, c = g0, d = one, out = p2p1g0);
+	And(a = p2, b = g1, out = p2g1);
+	Or4way(a = p2p1p0c0, b = p2p1g0, c = p2g1, d = g2, out = c3);
+
+	//limiting to fan in = 4
+	/*
+	//c4 = c3p3+g3 = p3p2p1p0c0 + p3p2p1g0 + p3p2g1+ p3g2 + g3
+	And(a = p2p1p0c0, b = p3, out = p3p2p1p0c0);
+	And(a = p3, b = p2p1g0, out = p3p2p1g0);
+	And(a = p3, b = p2g1, out = p3p2g1);
+	And(a = p3, b = g2, out = p3g2);
+	Or4way(a = p3p2p1p0c0, b = p3p2p1g0, c = p3p2g1, d = p3g2, out = c4_t1);
+	Or(a = c4_t1, b = g3, out = c4);
+	*/
+
+	//c4 = c3p3 + g3
+	And(a = c3, b = p3, out = c3p3);
+	Or(a = c3p3, b = g3, out= c4);
+
+	//c5 = g4+ p4c4 = g4 + p4p3c3 + p4g3
+	And(a = p4, b = g3, out = p4g3);
+	And(a = c3, b = p3, out = p3c3);
+	And(a = p3c3, b = p4, out = p4p3c3);
+	Or(a = p4p3c3, b = p4g3, out = c5_t1);
+	Or(a = c5_t1, b = g4, out = c5);
+
 	
 
 }
