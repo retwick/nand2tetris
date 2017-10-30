@@ -44,7 +44,6 @@ CHIP CLA16 {
 	And(a = a[13], b = b[13], out = g13);
 	And(a = a[14], b = b[14], out = g14);
 	And(a = a[15], b = b[15], out = g15);
-
 	
 	//carry terms
 	//  c i+1 = G i + P i G i−1 + P i P i−1 G i−2 + · · · + P i P i−1 · · · P 1 G 0 + P i P i−1 · · · P 0 c 0
@@ -69,7 +68,6 @@ CHIP CLA16 {
 	And4way( a = p2, b = p1, c = g0, d = one, out = p2p1g0);
 	And(a = p2, b = g1, out = p2g1);
 	Or4way(a = p2p1p0c0, b = p2p1g0, c = p2g1, d = g2, out = c3);
-
 	
 	//c4 = c3p3+g3 = p3p2p1p0c0 + p3p2p1g0 + p3p2g1+ p3g2 + g3
 	And(a = p2p1p0c0, b = p3, out = p3p2p1p0c0);
@@ -79,7 +77,6 @@ CHIP CLA16 {
 	Or4way(a = p3p2p1p0c0, b = p3p2p1g0, c = p3p2g1, d = p3g2, out = c4xt1);
 	Or(a = c4xt1, b = g3, out = c4);
 	
-
 	//c5 = g4+ p4c4 
 	And(a = p4, b = c4, out = p4c4);
 	Or(a = g4, b = p4c4, out = c5);
@@ -90,14 +87,13 @@ CHIP CLA16 {
 	Or(a = p5p4c4, b = p5g4, out = c6xt1);
 	Or(a = c6xt1, b = g5, out = c6);
 	
-	//c7 = p2p1p0c0 + p2p1g0 + p2g1+ g2
-
+	//c7
 	And4way( a = p6, b = p5, c = p4, d = c4, out = p6p5p4c4);
 	And4way( a = p6, b = p5, c = g4, d = one, out = p6p5g4);
 	And(a = p6, b = g5, out = p6g5);
 	Or4way(a = p6p5p4c4, b = p6p5g4, c = p6g5, d = g6, out = c7);
 
-	//c8 = c3p3+g3 = p3p2p1p0c0 + p3p2p1g0 + p3p2g1+ p3g2 + g3
+	//c8
 	And(a = p6p5p4c4, b = p7, out = p7p6p5p4c4);
 	And(a = p7, b = p6p5g4, out = p7p6p5g4);
 	And(a = p7, b = p6g5, out = p7p6g5);
@@ -114,16 +110,14 @@ CHIP CLA16 {
 	And(a = p8c8, b = p9, out = p9p8c8);
 	Or(a = p9p8c8, b = p9g8, out = c10xt1);
 	Or(a = c10xt1, b = g9, out = c10);
-	
 
 	//c11
-
 	And4way( a = p10, b = p9, c = p8, d = c8, out = p10p9p8c8);
 	And4way( a = p10, b = p9, c = g8, d = one, out = p10p9g8);
 	And(a = p10, b = g9, out = p10g9);
 	Or4way(a = p10p9p8c8, b = p10p9g8, c = p10g9, d = g10, out = c11);
 
-	//c12 = p11p2p1p0c0 + p11p2p1g0 + p11p2g1+ p11g2 + g11
+	//c12
 	And(a = p10p9p8c8, b = p11, out = p11p10p9p8c8);
 	And(a = p11, b = p10p9g8, out = p11p10p9g8);
 	And(a = p11, b = p10g9, out = p11p10g9);
@@ -131,34 +125,27 @@ CHIP CLA16 {
 	Or4way(a = p11p10p9p8c8, b = p11p10p9g8, c = p11p10g9, d = p11g10, out = c12xt1);
 	Or(a = c8xt1, b = g11, out = c12);
 
-
-
-	//c13 = g4+ p4c4 
+	//c13
 	And(a = p12, b = c12, out = p12c12);
 	Or(a = g12, b = p12c12, out = c13);
 
-	//c14 = p13p4c4+ p13g4 + g13
+	//c14 
 	And(a = p13, b = g4, out = p13g4);
 	And(a = p4c4, b = p13, out = p13p4c4);
 	Or(a = p13p4c4, b = p13g4, out = c14xt1);
 	Or(a = c14xt1, b = g13, out = c14);
 	
-	//c15 = p2p1p0c0 + p2p1g0 + p2g1+ g2
-
+	//c15
 	And4way( a = p14, b = p13, c = p4, d = c4, out = p14p13p4c4);
 	And4way( a = p14, b = p13, c = g4, d = one, out = p14p13g4);
 	And(a = p14, b = g13, out = p14g13);
 	Or4way(a = p14p13p4c4, b = p14p13g4, c = p14g13, d = g14, out = c15);
 
-	//c16 = c3p3+g3 = p3p2p1p0c0 + p3p2p1g0 + p3p2g1+ p3g2 + g3
+	//c16
 	And(a = p14p13p4c4, b = p15, out = p15p14p13p4c4);
 	And(a = p15, b = p14p13g4, out = p15p14p13g4);
 	And(a = p15, b = p14g13, out = p15p14g13);
 	And(a = p15, b = g14, out = p15g14);
 	Or4way(a = p15p14p13p4c4, b = p15p14p13g4, c = p15p14g13, d = p15g14, out = c16xt1);
 	Or(a = c16xt1, b = g15, out = c16);
-
-
-
-
 }
